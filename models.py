@@ -43,7 +43,6 @@ class User(db.Model, UserMixin):
         )
     
     def has_password(self):
-        """Перевіряє чи користувач має пароль (не тільки OAuth)"""
         return self.password_hash is not None
     
     def generate_totp_secret(self):

@@ -32,13 +32,13 @@
                 </div>
                 
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ url_for('profile') }}" class="btn btn-primary">
+                    <a href="{{ url_for('profile.profile') }}" class="btn btn-primary">
                         👤 Профіль
                     </a>
-                    <a href="{{ url_for('admin_login_attempts') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('admin.login_attempts') }}" class="btn btn-outline-secondary">
                         📜 Логи входів
                     </a>
-                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger ms-auto">
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger ms-auto">
                         🚪 Вийти
                     </a>
                 </div>

@@ -8,16 +8,6 @@ class ReCaptcha:
         self.secret_key = secret_key
     
     def verify(self, response_token, remote_ip=None):
-        """
-        Перевіряє відповідь reCAPTCHA
-        
-        Args:
-            response_token: токен з форми (g-recaptcha-response)
-            remote_ip: IP користувача (опціонально)
-        
-        Returns:
-            (bool, str): (успіх, повідомлення)
-        """
         if not response_token:
             return False, "Підтвердіть, що ви не робот"
         

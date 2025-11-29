@@ -3,9 +3,6 @@ import io
 import base64
 
 def generate_qr_code(uri):
-    """
-    Генерує QR-код як base64-строку для відображення в HTML
-    """
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,

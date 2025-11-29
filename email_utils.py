@@ -5,16 +5,11 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 mail = Mail()
 
 def generate_activation_token(email):
-    """Генерує токен активації для email"""
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='email-activation-salt')
 
 
 def verify_activation_token(token, max_age=3600):
-    """
-    Перевіряє токен активації
-    max_age - час життя токена в секундах (за замовчуванням 1 година)
-    """
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
         email = serializer.loads(token, salt='email-activation-salt', max_age=max_age)
@@ -26,9 +21,8 @@ def verify_activation_token(token, max_age=3600):
 
 
 def send_activation_email(user):
-    """Надсилає email з посиланням для активації"""
     token = generate_activation_token(user.email)
-    activation_url = url_for('activate', token=token, _external=True)
+    activation_url = url_for('auth.activate', token=token, _external=True)
     
     msg = Message(
         subject='Активація облікового запису',
@@ -96,20 +90,11 @@ def send_activation_email(user):
 
 
 def generate_reset_token(email):
-    """Генерує токен для скидання пароля"""
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='password-reset-salt')
 
 
 def verify_reset_token(token, max_age=3600):
-    """
-    Перевіряє токен скидання пароля
-    max_age - час життя токена в секундах (за замовчуванням 1 година)
-    
-    Повертає:
-        (email, None) - якщо токен валідний
-        (None, error_message) - якщо токен невалідний
-    """
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     try:
         email = serializer.loads(token, salt='password-reset-salt', max_age=max_age)
@@ -121,9 +106,8 @@ def verify_reset_token(token, max_age=3600):
 
 
 def send_reset_password_email(user):
-    """Надсилає email з посиланням для скидання пароля"""
     token = generate_reset_token(user.email)
-    reset_url = url_for('reset_password', token=token, _external=True)
+    reset_url = url_for('auth.reset_password', token=token, _external=True)
     
     msg = Message(
         subject='Відновлення пароля',

@@ -70,7 +70,6 @@ class Disable2FAForm(FlaskForm):
 
 
 class ForgotPasswordForm(FlaskForm):
-    """Форма запиту на відновлення пароля"""
     email = StringField('Email', validators=[
         DataRequired(message="Введіть ваш email"),
         Email(message="Введіть коректний email")
@@ -80,7 +79,6 @@ class ForgotPasswordForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    """Форма встановлення нового пароля"""
     password = PasswordField('Новий пароль', validators=[
         DataRequired(message="Це поле обов'язкове")
     ])

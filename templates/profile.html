@@ -58,7 +58,7 @@
                                         Ваш акаунт захищено двофакторною аутентифікацією.
                                     </p>
                                 </div>
-                                <a href="{{ url_for('disable_2fa') }}" class="btn btn-outline-danger">
+                                <a href="{{ url_for('profile.disable_2fa') }}" class="btn btn-outline-danger">
                                     Вимкнути 2FA
                                 </a>
                             </div>
@@ -70,7 +70,7 @@
                                         Рекомендуємо увімкнути 2FA для додаткового захисту.
                                     </p>
                                 </div>
-                                <a href="{{ url_for('enable_2fa') }}" class="btn btn-success">
+                                <a href="{{ url_for('profile.enable_2fa') }}" class="btn btn-success">
                                     Увімкнути 2FA
                                 </a>
                             </div>
@@ -79,10 +79,10 @@
                 </div>
                 
                 <div class="d-flex gap-2">
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary">
                         ← Назад до панелі
                     </a>
-                    <a href="{{ url_for('logout') }}" class="btn btn-outline-danger ms-auto">
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger ms-auto">
                         🚪 Вийти
                     </a>
                 </div>

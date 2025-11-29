@@ -3,7 +3,6 @@ from authlib.integrations.flask_client import OAuth
 oauth = OAuth()
 
 def init_oauth(app):
-    """Ініціалізація OAuth провайдерів"""
     oauth.init_app(app)
     
     oauth.register(
