@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, redirect, url_for, flash, request, session
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from datetime import datetime, timedelta
@@ -11,6 +12,7 @@ from email_utils import (mail, send_activation_email, verify_activation_token,
                          send_reset_password_email, verify_reset_token)
 from totp_utils import generate_qr_code
 from oauth import oauth, init_oauth
+from urllib.parse import urlparse
 import secrets
 
 app = Flask(__name__)
@@ -176,6 +178,15 @@ def resend_activation():
     
     return render_template('resend_activation.html')
 
+def is_safe_redirect_url(url):
+    """
+    Перевіряє, чи є URL безпечним для редиректу.
+    Дозволяє тільки відносні URL (без схеми і домену).
+    """
+    if not url:
+        return False
+    parsed = urlparse(url)
+    return parsed.netloc == '' and parsed.scheme == ''
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -244,6 +255,9 @@ def login():
         flash(f'Ласкаво просимо, {user.username}!', 'success')
         
         next_page = request.args.get('next')
+        if not is_safe_redirect_url(next_page):
+            next_page = None
+        
         return redirect(next_page if next_page else url_for('dashboard'))
     
     return render_template('login.html', form=form)
@@ -554,4 +568,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(debug=debug_mode)
