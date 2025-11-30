@@ -8,11 +8,11 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">🎉 Вітаємо, {{ current_user.username }}!</h2>
-                
+
                 <div class="alert alert-success text-center">
                     Ви успішно увійшли в систему!
                 </div>
-                
+
                 <div class="card bg-light mb-4">
                     <div class="card-body">
                         <h5>Інформація про користувача:</h5>
@@ -20,17 +20,17 @@
                             <li><strong>ID:</strong> {{ current_user.id }}</li>
                             <li><strong>Ім'я:</strong> {{ current_user.username }}</li>
                             <li><strong>Email:</strong> {{ current_user.email }}</li>
-                            <li><strong>2FA:</strong> 
+                            <li><strong>2FA:</strong>
                                 {% if current_user.is_2fa_enabled %}
-                                    <span class="badge bg-success">Увімкнено</span>
+                                <span class="badge bg-success">Увімкнено</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark">Вимкнено</span>
+                                <span class="badge bg-warning text-dark">Вимкнено</span>
                                 {% endif %}
                             </li>
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="d-flex gap-2 flex-wrap">
                     <a href="{{ url_for('profile.profile') }}" class="btn btn-primary">
                         👤 Профіль

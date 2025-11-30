@@ -2,9 +2,10 @@ from authlib.integrations.flask_client import OAuth
 
 oauth = OAuth()
 
+
 def init_oauth(app):
     oauth.init_app(app)
-    
+
     oauth.register(
         name='google',
         client_id=app.config['GOOGLE_CLIENT_ID'],
@@ -14,7 +15,7 @@ def init_oauth(app):
             'scope': 'openid email profile'
         }
     )
-    
+
     oauth.register(
         name='github',
         client_id=app.config['GITHUB_CLIENT_ID'],
@@ -26,5 +27,5 @@ def init_oauth(app):
             'scope': 'user:email'
         }
     )
-    
+
     return oauth

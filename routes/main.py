@@ -1,8 +1,9 @@
+from constants import *
 from flask import Blueprint, render_template
 from flask_login import login_required
-from constants import *
 
 main_bp = Blueprint('main', __name__)
+
 
 @main_bp.route('/dashboard')
 @login_required

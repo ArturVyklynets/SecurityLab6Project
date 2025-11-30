@@ -8,24 +8,24 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">🔓 Вимкнути 2FA</h2>
-                
+
                 <div class="alert alert-warning">
                     <strong>⚠️ Увага!</strong> Вимкнення 2FA знизить безпеку вашого акаунту.
                 </div>
-                
+
                 <form method="POST">
                     {{ form.hidden_tag() }}
-                    
+
                     {% if has_password %}
                     <p class="text-muted">
                         Для підтвердження введіть ваш пароль:
                     </p>
-                    
+
                     <div class="mb-4">
                         {{ form.password.label(class="form-label") }}
                         {{ form.password(class="form-control", placeholder="Ваш пароль") }}
                         {% for error in form.password.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
                     {% else %}
@@ -33,7 +33,7 @@
                         Натисніть кнопку нижче для вимкнення 2FA:
                     </p>
                     {% endif %}
-                    
+
                     <div class="d-grid gap-2">
                         {{ form.submit(class="btn btn-danger btn-lg") }}
                         <a href="{{ url_for('profile.profile') }}" class="btn btn-outline-secondary">Скасувати</a>

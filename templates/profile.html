@@ -8,76 +8,78 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">👤 Профіль</h2>
-                
+
                 <div class="card bg-light mb-4">
                     <div class="card-body">
                         <div class="d-flex align-items-center mb-3">
                             {% if current_user.avatar_url %}
-                                <img src="{{ current_user.avatar_url }}" 
-                                     alt="Avatar" 
-                                     class="rounded-circle me-3" 
-                                     style="width: 60px; height: 60px; object-fit: cover;">
+                            <img src="{{ current_user.avatar_url }}"
+                                 alt="Avatar"
+                                 class="rounded-circle me-3"
+                                 style="width: 60px; height: 60px; object-fit: cover;">
                             {% else %}
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" 
-                                     style="width: 60px; height: 60px; font-size: 24px;">
-                                    {{ current_user.username[0].upper() }}
-                                </div>
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                 style="width: 60px; height: 60px; font-size: 24px;">
+                                {{ current_user.username[0].upper() }}
+                            </div>
                             {% endif %}
                             <div>
                                 <h5 class="mb-0">{{ current_user.username }}</h5>
                                 <small class="text-muted">{{ current_user.email }}</small>
                             </div>
                         </div>
-                        
+
                         <hr>
-                        
+
                         <ul class="mb-0">
-                            <li><strong>Дата реєстрації:</strong> {{ current_user.created_at.strftime('%d.%m.%Y %H:%M') }}</li>
+                            <li><strong>Дата реєстрації:</strong> {{ current_user.created_at.strftime('%d.%m.%Y %H:%M')
+                                }}
+                            </li>
                             <li>
                                 <strong>Тип акаунту:</strong>
                                 {% if current_user.oauth_provider %}
-                                    <span class="badge bg-info">{{ current_user.oauth_provider|capitalize }}</span>
+                                <span class="badge bg-info">{{ current_user.oauth_provider|capitalize }}</span>
                                 {% else %}
-                                    <span class="badge bg-secondary">Email/Пароль</span>
+                                <span class="badge bg-secondary">Email/Пароль</span>
                                 {% endif %}
                             </li>
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">🔐 Двофакторна аутентифікація (2FA)</h5>
                     </div>
                     <div class="card-body">
                         {% if current_user.is_2fa_enabled %}
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <span class="badge bg-success fs-6">✅ Увімкнено</span>
-                                    <p class="text-muted mb-0 mt-2">
-                                        Ваш акаунт захищено двофакторною аутентифікацією.
-                                    </p>
-                                </div>
-                                <a href="{{ url_for('profile.disable_2fa') }}" class="btn btn-outline-danger">
-                                    Вимкнути 2FA
-                                </a>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="badge bg-success fs-6">✅ Увімкнено</span>
+                                <p class="text-muted mb-0 mt-2">
+                                    Ваш акаунт захищено двофакторною аутентифікацією.
+                                </p>
                             </div>
+                            <a href="{{ url_for('profile.disable_2fa') }}" class="btn btn-outline-danger">
+                                Вимкнути 2FA
+                            </a>
+                        </div>
                         {% else %}
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <span class="badge bg-warning text-dark fs-6">⚠️ Вимкнено</span>
-                                    <p class="text-muted mb-0 mt-2">
-                                        Рекомендуємо увімкнути 2FA для додаткового захисту.
-                                    </p>
-                                </div>
-                                <a href="{{ url_for('profile.enable_2fa') }}" class="btn btn-success">
-                                    Увімкнути 2FA
-                                </a>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="badge bg-warning text-dark fs-6">⚠️ Вимкнено</span>
+                                <p class="text-muted mb-0 mt-2">
+                                    Рекомендуємо увімкнути 2FA для додаткового захисту.
+                                </p>
                             </div>
+                            <a href="{{ url_for('profile.enable_2fa') }}" class="btn btn-success">
+                                Увімкнути 2FA
+                            </a>
+                        </div>
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div class="d-flex gap-2">
                     <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary">
                         ← Назад до панелі

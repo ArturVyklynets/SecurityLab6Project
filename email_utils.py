@@ -4,6 +4,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 mail = Mail()
 
+
 def generate_activation_token(email):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='email-activation-salt')
@@ -23,12 +24,12 @@ def verify_activation_token(token, max_age=3600):
 def send_activation_email(user):
     token = generate_activation_token(user.email)
     activation_url = url_for('auth.activate', token=token, _external=True)
-    
+
     msg = Message(
         subject='Активація облікового запису',
         recipients=[user.email]
     )
-    
+
     msg.html = f'''
     <!DOCTYPE html>
     <html>
@@ -74,7 +75,7 @@ def send_activation_email(user):
     </body>
     </html>
     '''
-    
+
     msg.body = f'''
     Привіт, {user.username}!
     
@@ -85,7 +86,7 @@ def send_activation_email(user):
     
     Якщо ви не реєструвались, проігноруйте цей лист.
     '''
-    
+
     mail.send(msg)
 
 
@@ -108,12 +109,12 @@ def verify_reset_token(token, max_age=3600):
 def send_reset_password_email(user):
     token = generate_reset_token(user.email)
     reset_url = url_for('auth.reset_password', token=token, _external=True)
-    
+
     msg = Message(
         subject='Відновлення пароля',
         recipients=[user.email]
     )
-    
+
     msg.html = f'''
     <!DOCTYPE html>
     <html>
@@ -164,7 +165,7 @@ def send_reset_password_email(user):
     </body>
     </html>
     '''
-    
+
     msg.body = f'''
     Привіт, {user.username}!
     
@@ -178,5 +179,5 @@ def send_reset_password_email(user):
     Якщо ви не запитували скидання пароля, проігноруйте цей лист.
     Ваш пароль залишиться без змін.
     '''
-    
+
     mail.send(msg)

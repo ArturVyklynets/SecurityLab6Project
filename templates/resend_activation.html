@@ -8,31 +8,31 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">📧 Повторна активація</h2>
-                
+
                 <p class="text-muted text-center mb-4">
                     Введіть email, на який зареєстровано акаунт, і ми надішлемо новий лист активації.
                 </p>
-                
+
                 <form method="POST">
                     <div class="mb-4">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" 
-                               class="form-control" 
-                               id="email" 
-                               name="email" 
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               name="email"
                                placeholder="example@email.com"
                                required>
                     </div>
-                    
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">
                             📨 Надіслати лист
                         </button>
                     </div>
                 </form>
-                
+
                 <hr class="my-4">
-                
+
                 <p class="text-center mb-0">
                     <a href="{{ url_for('auth.login') }}">← Повернутися до входу</a>
                 </p>

@@ -8,28 +8,29 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">🔐 Введіть код 2FA</h2>
-                
+
                 <p class="text-muted text-center mb-4">
                     Відкрийте Google Authenticator і введіть 6-значний код
                 </p>
-                
+
                 <form method="POST">
                     {{ form.hidden_tag() }}
-                    
+
                     <div class="mb-4">
-                        {{ form.code(class="form-control form-control-lg text-center", placeholder="000000", maxlength="6", autocomplete="off", autofocus=true) }}
+                        {{ form.code(class="form-control form-control-lg text-center", placeholder="000000",
+                        maxlength="6", autocomplete="off", autofocus=true) }}
                         {% for error in form.code.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
-                    
+
                     <div class="d-grid">
                         {{ form.submit(class="btn btn-primary btn-lg") }}
                     </div>
                 </form>
-                
+
                 <hr class="my-4">
-                
+
                 <p class="text-center mb-0">
                     <a href="{{ url_for('auth.login') }}">← Повернутися до входу</a>
                 </p>

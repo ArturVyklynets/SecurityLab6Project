@@ -8,42 +8,44 @@
         <div class="card">
             <div class="card-body p-5">
                 <h2 class="text-center mb-4">🔐 Увімкнути 2FA</h2>
-                
+
                 <div class="alert alert-info">
                     <strong>Крок 1:</strong> Встановіть Google Authenticator на телефон
                     <br>
-                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Android</a> | 
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+                       target="_blank">Android</a> |
                     <a href="https://apps.apple.com/app/google-authenticator/id388497605" target="_blank">iOS</a>
                 </div>
-                
+
                 <div class="alert alert-info">
                     <strong>Крок 2:</strong> Скануйте QR-код нижче або введіть ключ вручну
                 </div>
-                
+
                 <div class="text-center mb-4">
                     <img src="{{ qr_code }}" alt="QR Code" class="img-fluid border rounded" style="max-width: 250px;">
                 </div>
-                
+
                 <div class="alert alert-secondary">
                     <strong>Ключ вручну:</strong>
                     <code class="user-select-all">{{ secret }}</code>
                 </div>
-                
+
                 <div class="alert alert-info">
                     <strong>Крок 3:</strong> Введіть 6-значний код з додатку для підтвердження
                 </div>
-                
+
                 <form method="POST">
                     {{ form.hidden_tag() }}
-                    
+
                     <div class="mb-4">
                         {{ form.code.label(class="form-label") }}
-                        {{ form.code(class="form-control form-control-lg text-center", placeholder="000000", maxlength="6", autocomplete="off") }}
+                        {{ form.code(class="form-control form-control-lg text-center", placeholder="000000",
+                        maxlength="6", autocomplete="off") }}
                         {% for error in form.code.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
+                        <div class="invalid-feedback d-block">{{ error }}</div>
                         {% endfor %}
                     </div>
-                    
+
                     <div class="d-grid gap-2">
                         {{ form.submit(class="btn btn-success btn-lg") }}
                         <a href="{{ url_for('profile.profile') }}" class="btn btn-outline-secondary">Скасувати</a>

@@ -1,10 +1,11 @@
+from constants import *
 from flask import Blueprint, render_template
 from flask_login import login_required
-from utils.auth_helpers import admin_required
 from models import LoginAttempt
-from constants import *
+from utils.auth_helpers import admin_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
 
 @admin_bp.route('/login-attempts')
 @login_required
