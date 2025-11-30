@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 import bcrypt
@@ -12,7 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=db.func.now())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     is_activated = db.Column(db.Boolean, default=False)
     activated_at = db.Column(db.DateTime, nullable=True)
@@ -26,6 +27,8 @@ class User(db.Model, UserMixin):
     oauth_provider = db.Column(db.String(20), nullable=True)
     oauth_id = db.Column(db.String(100), nullable=True)
     avatar_url = db.Column(db.String(255), nullable=True)
+
+    is_admin = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         salt = bcrypt.gensalt()
@@ -77,6 +80,6 @@ class LoginAttempt(db.Model):
     user_agent = db.Column(db.String(255))
     success = db.Column(db.Boolean, nullable=False)
     reason = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=db.func.now())
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     user = db.relationship('User', backref='login_attempts')

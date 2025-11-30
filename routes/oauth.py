@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, flash, session
 from flask_login import login_user
-from datetime import datetime, timezone
+from datetime import datetime
 from oauth import oauth
 from utils.auth_helpers import log_login_attempt, generate_unique_username
 from models import db, User
@@ -50,7 +50,7 @@ def oauth_google_callback():
                 oauth_id=google_id,
                 avatar_url=avatar,
                 is_activated=True,
-                activated_at = datetime.now(timezone.utc)
+                activated_at = datetime.utcnow()
             )
             db.session.add(user)
             db.session.commit()
@@ -122,7 +122,7 @@ def oauth_github_callback():
                 oauth_id=github_id,
                 avatar_url=avatar,
                 is_activated=True,
-                activated_at = datetime.now(timezone.utc)
+                activated_at = datetime.utcnow()
             )
             db.session.add(user)
             db.session.commit()

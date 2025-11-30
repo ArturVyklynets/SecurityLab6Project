@@ -35,9 +35,13 @@
                     <a href="{{ url_for('profile.profile') }}" class="btn btn-primary">
                         👤 Профіль
                     </a>
-                    <a href="{{ url_for('admin.login_attempts') }}" class="btn btn-outline-secondary">
-                        📜 Логи входів
+
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin.login_attempts') }}" class="btn btn-warning">
+                        🔐 Логи входів
                     </a>
+                    {% endif %}
+
                     <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger ms-auto">
                         🚪 Вийти
                     </a>

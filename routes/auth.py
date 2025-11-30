@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user,login_required, current_user, logout_user
 from app import recaptcha 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from forms import RegistrationForm, LoginForm, TwoFactorForm, ForgotPasswordForm, ResetPasswordForm
 from email_utils import send_activation_email, verify_activation_token, send_reset_password_email, verify_reset_token
 from utils.auth_helpers import log_login_attempt, is_safe_redirect_url
@@ -83,7 +83,7 @@ def activate(token):
         return redirect(url_for('auth.login'))
     
     user.is_activated = True
-    user.activated_at = datetime.now(timezone.utc)
+    user.activated_at = datetime.utcnow()
     db.session.commit()
     
     flash('Акаунт успішно активовано! Тепер ви можете увійти.', 'success')
@@ -138,7 +138,8 @@ def login():
             db.session.commit()
             return render_template(LOGIN_TEMPLATE, form=form, show_resend=True)
         
-        now = datetime.now(timezone.utc)
+        now = datetime.utcnow()
+        
         if user.account_locked_until and user.account_locked_until > now:
             remaining_seconds = (user.account_locked_until - now).total_seconds()
             remaining_minutes = int(remaining_seconds // 60) + 1
@@ -152,7 +153,7 @@ def login():
             reason = 'bad_password'
             
             if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
-                user.account_locked_until = datetime.now(timezone.utc) + timedelta(minutes=LOCKOUT_MINUTES)
+                user.account_locked_until = datetime.utcnow() + timedelta(minutes=LOCKOUT_MINUTES)
                 reason = 'account_locked_after_too_many_attempts'
                 flash(f'Забагато невдалих спроб. Акаунт заблоковано на {LOCKOUT_MINUTES} хв.', 'danger')
             else:
@@ -184,6 +185,7 @@ def login():
         return redirect(next_page if next_page else url_for('main.dashboard'))
     
     return render_template(LOGIN_TEMPLATE, form=form)
+
 
 @auth_bp.route('/two-factor', methods=['GET', 'POST'])
 def two_factor():

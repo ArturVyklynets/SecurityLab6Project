@@ -1,7 +1,10 @@
-from flask import request
+from flask import request, flash, redirect, url_for
+from functools import wraps
+from flask_login import current_user
 from models import db, User, LoginAttempt
 from urllib.parse import urlparse
 import secrets
+
 
 
 def log_login_attempt(user, username_entered, success, reason):
@@ -12,7 +15,7 @@ def log_login_attempt(user, username_entered, success, reason):
         ip_address=request.remote_addr,
         user_agent=request.headers.get('User-Agent', '')[:255],
         success=success,
-        reason=reason
+        reason=reason,
     )
     db.session.add(attempt)
 
@@ -35,3 +38,15 @@ def is_safe_redirect_url(url):
         return False
     parsed = urlparse(url)
     return parsed.netloc == '' and parsed.scheme == ''
+    
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            flash('Будь ласка, увійдіть для доступу до цієї сторінки.', 'warning')
+            return redirect(url_for('auth.login'))
+        if not current_user.is_admin:
+            flash('У вас немає прав для доступу до цієї сторінки.', 'danger')
+            return redirect(url_for('main.dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function

@@ -68,7 +68,7 @@ def send_activation_email(user):
                 <p>Якщо ви не реєструвались на нашому сайті, просто проігноруйте цей лист.</p>
             </div>
             <div class="footer">
-                <p>© 2024 Password System. Всі права захищені.</p>
+                <p>© 2025 Password System. Всі права захищені.</p>
             </div>
         </div>
     </body>
@@ -158,7 +158,7 @@ def send_reset_password_email(user):
                    проігноруйте цей лист. Ваш пароль залишиться без змін.</p>
             </div>
             <div class="footer">
-                <p>© 2024 Password System. Всі права захищені.</p>
+                <p>© 2025 Password System. Всі права захищені.</p>
             </div>
         </div>
     </body>
