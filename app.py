@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 from config import Config
 from constants import LOGIN_URL
@@ -12,6 +13,8 @@ from recaptcha import ReCaptcha
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+csrf = CSRFProtect(app)
 
 db.init_app(app)
 mail.init_app(app)

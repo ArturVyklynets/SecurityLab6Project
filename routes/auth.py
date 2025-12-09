@@ -12,6 +12,7 @@ from constants import (
     DASHBOARD_URL,
     REGISTER_URL,
     USER_NOT_FOUND_MESSAGE,
+    FORGOT_PASSWORD_URL
 )
 from email_utils import (
     send_activation_email,
@@ -324,13 +325,13 @@ def reset_password_get(token):
 
     if error:
         flash(error, 'danger')
-        return redirect(url_for('auth.forgot_password'))
+        return redirect(url_for(FORGOT_PASSWORD_URL))
 
     user = User.query.filter_by(email=email).first()
 
     if not user:
         flash(USER_NOT_FOUND_MESSAGE, 'danger')
-        return redirect(url_for('auth.forgot_password'))
+        return redirect(url_for(FORGOT_PASSWORD_URL))
 
     form = ResetPasswordForm()
     return render_template(RESET_PASSWORD_TEMPLATE, form=form)
@@ -345,13 +346,13 @@ def reset_password_post(token):
 
     if error:
         flash(error, 'danger')
-        return redirect(url_for('auth.forgot_password'))
+        return redirect(url_for(FORGOT_PASSWORD_URL))
 
     user = User.query.filter_by(email=email).first()
 
     if not user:
         flash(USER_NOT_FOUND_MESSAGE, 'danger')
-        return redirect(url_for('auth.forgot_password'))
+        return redirect(url_for(FORGOT_PASSWORD_URL))
 
     form = ResetPasswordForm()
     
