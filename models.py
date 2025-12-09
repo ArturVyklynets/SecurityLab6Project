@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from datetime import datetime, timezone
 import bcrypt
 import pyotp
 from flask_login import UserMixin
@@ -15,13 +14,13 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     is_activated = db.Column(db.Boolean, default=False)
-    activated_at = db.Column(db.DateTime, nullable=True)
+    activated_at = db.Column(db.DateTime(timezone=True), nullable=True)
 
     failed_login_attempts = db.Column(db.Integer, default=0, nullable=False)
-    account_locked_until = db.Column(db.DateTime, nullable=True)
+    account_locked_until = db.Column(db.DateTime(timezone=True), nullable=True)
 
     totp_secret = db.Column(db.String(32), nullable=True)
     is_2fa_enabled = db.Column(db.Boolean, default=False)
@@ -61,7 +60,16 @@ class User(db.Model, UserMixin):
             name=self.email,
             issuer_name="PasswordSystem"
         )
-
+    
+    def get_account_locked_until(self):
+        if not self.account_locked_until:
+            return None
+        
+        if self.account_locked_until.tzinfo is None:
+            return self.account_locked_until.replace(tzinfo=timezone.utc)
+        
+        return self.account_locked_until
+    
     def verify_totp(self, code):
         if not self.totp_secret:
             return False
@@ -82,6 +90,6 @@ class LoginAttempt(db.Model):
     user_agent = db.Column(db.String(255))
     success = db.Column(db.Boolean, nullable=False)
     reason = db.Column(db.String(50))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     user = db.relationship('User', backref='login_attempts')
