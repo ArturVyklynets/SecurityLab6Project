@@ -4,6 +4,7 @@ from flask import Flask
 from flask_login import LoginManager
 
 from config import Config
+from constants import LOGIN_URL
 from email_utils import mail
 from models import db, User
 from oauth import init_oauth
@@ -22,7 +23,7 @@ recaptcha = ReCaptcha(
 )
 
 login_manager = LoginManager(app)
-login_manager.login_view = 'auth.login'
+login_manager.login_view = LOGIN_URL
 login_manager.login_message = 'Будь ласка, увійдіть для доступу до цієї сторінки'
 login_manager.login_message_category = 'warning'
 

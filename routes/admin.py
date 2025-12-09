@@ -1,6 +1,6 @@
-from constants import *
 from flask import Blueprint, render_template
 from flask_login import login_required
+from constants import ADMIN_LOGIN_ATTEMPTS_TEMPLATE
 from models import LoginAttempt
 from utils.auth_helpers import admin_required
 

@@ -1,6 +1,7 @@
-from constants import *
 from flask import Blueprint, render_template
 from flask_login import login_required
+
+from constants import DASHBOARD_TEMPLATE
 
 main_bp = Blueprint('main', __name__)
 

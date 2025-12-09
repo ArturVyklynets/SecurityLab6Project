@@ -2,26 +2,27 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp
 
+from constants import REQUIRED_FIELD_MESSAGE
 from validators import validate_password
 
 
 class RegistrationForm(FlaskForm):
     username = StringField('Ім\'я користувача', validators=[
-        DataRequired(message="Це поле обов'язкове"),
+        DataRequired(message=REQUIRED_FIELD_MESSAGE),
         Length(min=3, max=80, message="Ім'я має бути від 3 до 80 символів")
     ])
 
     email = StringField('Email', validators=[
-        DataRequired(message="Це поле обов'язкове"),
+        DataRequired(message=REQUIRED_FIELD_MESSAGE),
         Email(message="Введіть коректний email")
     ])
 
     password = PasswordField('Пароль', validators=[
-        DataRequired(message="Це поле обов'язкове")
+        DataRequired(message=REQUIRED_FIELD_MESSAGE)
     ])
 
     confirm_password = PasswordField('Підтвердіть пароль', validators=[
-        DataRequired(message="Це поле обов'язкове"),
+        DataRequired(message=REQUIRED_FIELD_MESSAGE),
         EqualTo('password', message="Паролі не співпадають")
     ])
 
@@ -35,11 +36,11 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username = StringField('Ім\'я користувача', validators=[
-        DataRequired(message="Це поле обов'язкове")
+        DataRequired(message=REQUIRED_FIELD_MESSAGE)
     ])
 
     password = PasswordField('Пароль', validators=[
-        DataRequired(message="Це поле обов'язкове")
+        DataRequired(message=REQUIRED_FIELD_MESSAGE)
     ])
 
     submit = SubmitField('Увійти')
@@ -82,11 +83,11 @@ class ForgotPasswordForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Новий пароль', validators=[
-        DataRequired(message="Це поле обов'язкове")
+        DataRequired(message=REQUIRED_FIELD_MESSAGE)
     ])
 
     confirm_password = PasswordField('Підтвердіть новий пароль', validators=[
-        DataRequired(message="Це поле обов'язкове"),
+        DataRequired(message=REQUIRED_FIELD_MESSAGE),
         EqualTo('password', message="Паролі не співпадають")
     ])
 

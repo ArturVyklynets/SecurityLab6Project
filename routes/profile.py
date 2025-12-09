@@ -1,6 +1,6 @@
-from constants import *
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
+from constants import DISABLE_2FA_TEMPLATE, ENABLE_2FA_TEMPLATE, PROFILE_TEMPLATE, PROFILE_URL
 from forms import Enable2FAForm, Disable2FAForm
 from models import db
 from totp_utils import generate_qr_code
@@ -19,7 +19,7 @@ def profile():
 def enable_2fa():
     if current_user.is_2fa_enabled:
         flash('2FA вже увімкнено.', 'info')
-        return redirect(url_for('profile.profile'))
+        return redirect(url_for(PROFILE_URL))
 
     form = Enable2FAForm()
 
@@ -35,7 +35,7 @@ def enable_2fa():
             current_user.is_2fa_enabled = True
             db.session.commit()
             flash('2FA успішно увімкнено! 🔐', 'success')
-            return redirect(url_for('profile.profile'))
+            return redirect(url_for(PROFILE_URL))
         else:
             flash('Невірний код. Спробуйте ще раз.', 'danger')
 
@@ -47,7 +47,7 @@ def enable_2fa():
 def disable_2fa():
     if not current_user.is_2fa_enabled:
         flash('2FA не увімкнено.', 'info')
-        return redirect(url_for('profile.profile'))
+        return redirect(url_for(PROFILE_URL))
 
     form = Disable2FAForm()
 
@@ -57,7 +57,7 @@ def disable_2fa():
             current_user.totp_secret = None
             db.session.commit()
             flash('2FA вимкнено.', 'success')
-            return redirect(url_for('profile.profile'))
+            return redirect(url_for(PROFILE_URL))
         else:
             flash('Невірний пароль.', 'danger')
 

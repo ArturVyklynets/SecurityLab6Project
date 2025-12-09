@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from constants import *
 from flask import Blueprint, redirect, url_for, flash, session
 from flask_login import login_user
+from constants import LOGIN_URL, DASHBOARD_URL
 from models import db, User
 from utils.auth_helpers import log_login_attempt, generate_unique_username
 
@@ -34,7 +34,7 @@ def oauth_google_callback():
 
         if not email:
             flash('Не вдалося отримати email від Google.', 'danger')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for(LOGIN_URL))
 
         user = User.query.filter_by(email=email).first()
 
@@ -69,11 +69,11 @@ def oauth_google_callback():
 
         login_user(user)
         flash(f'Ласкаво просимо, {user.username}!', 'success')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     except Exception as e:
         flash(f'Помилка авторизації через Google: {str(e)}', 'danger')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
 
 @oauth_bp.route('/oauth/github')
@@ -87,8 +87,6 @@ def oauth_github():
 def oauth_github_callback():
     """Callback від GitHub після авторизації"""
     try:
-        token = oauth.github.authorize_access_token()
-
         resp = oauth.github.get('user')
         user_info = resp.json()
 
@@ -108,7 +106,7 @@ def oauth_github_callback():
         if not email:
             flash('Не вдалося отримати email від GitHub. Переконайтесь, що email публічний або підтверджений.',
                   'danger')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for(LOGIN_URL))
 
         user = User.query.filter_by(email=email).first()
 
@@ -143,8 +141,8 @@ def oauth_github_callback():
 
         login_user(user)
         flash(f'Ласкаво просимо, {user.username}!', 'success')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     except Exception as e:
         flash(f'Помилка авторизації через GitHub: {str(e)}', 'danger')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))

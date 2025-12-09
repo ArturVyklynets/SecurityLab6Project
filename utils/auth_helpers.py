@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from flask import request, flash, redirect, url_for
 from flask_login import current_user
+from constants import LOGIN_URL, DASHBOARD_URL
 from models import db, User, LoginAttempt
 
 
@@ -47,10 +48,10 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
             flash('Будь ласка, увійдіть для доступу до цієї сторінки.', 'warning')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for(LOGIN_URL))
         if not current_user.is_admin:
             flash('У вас немає прав для доступу до цієї сторінки.', 'danger')
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for(DASHBOARD_URL))
         return f(*args, **kwargs)
 
     return decorated_function

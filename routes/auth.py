@@ -1,26 +1,68 @@
 from datetime import datetime, timedelta
 
 from app import recaptcha
-from constants import *
-from email_utils import send_activation_email, verify_activation_token, send_reset_password_email, verify_reset_token
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
-from flask_login import login_user, login_required, current_user, logout_user
-from forms import RegistrationForm, LoginForm, TwoFactorForm, ForgotPasswordForm, ResetPasswordForm
+from constants import (
+    FORGOT_PASSWORD_TEMPLATE,
+    LOCKOUT_MINUTES,
+    LOGIN_TEMPLATE,
+    MAX_FAILED_ATTEMPTS,
+    REGISTER_TEMPLATE,
+    RESEND_ACTIVATION_TEMPLATE,
+    RESET_PASSWORD_TEMPLATE,
+    TWO_FACTOR_TEMPLATE,
+    LOGIN_URL,
+    DASHBOARD_URL,
+    REGISTER_URL,
+    USER_NOT_FOUND_MESSAGE,
+    INVALID_CREDENTIALS_MESSAGE
+)
+from email_utils import (
+    send_activation_email,
+    verify_activation_token,
+    send_reset_password_email,
+    verify_reset_token
+)
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    url_for,
+    flash,
+    request,
+    session
+)
+from flask_login import (
+    login_user,
+    login_required,
+    current_user,
+    logout_user
+)
+from forms import (
+    RegistrationForm,
+    LoginForm,
+    TwoFactorForm,
+    ForgotPasswordForm,
+    ResetPasswordForm
+)
 from models import db, User
-from utils.auth_helpers import log_login_attempt, is_safe_redirect_url
+from utils.auth_helpers import (
+    log_login_attempt,
+    is_safe_redirect_url
+)
+
 
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/')
 def index():
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(LOGIN_URL))
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     form = RegistrationForm()
 
@@ -63,7 +105,7 @@ def register():
         except Exception as e:
             flash(f'Акаунт створено, але не вдалося надіслати email: {str(e)}', 'warning')
 
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     return render_template(REGISTER_TEMPLATE, form=form)
 
@@ -74,30 +116,30 @@ def activate(token):
 
     if error:
         flash(error, 'danger')
-        return redirect(url_for('auth.register'))
+        return redirect(url_for(REGISTER_URL))
 
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        flash('Користувача не знайдено.', 'danger')
-        return redirect(url_for('auth.register'))
+        flash(USER_NOT_FOUND_MESSAGE, 'danger')
+        return redirect(url_for(REGISTER_URL))
 
     if user.is_activated:
         flash('Акаунт вже активовано. Ви можете увійти.', 'info')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     user.is_activated = True
     user.activated_at = datetime.utcnow()
     db.session.commit()
 
     flash('Акаунт успішно активовано! Тепер ви можете увійти.', 'success')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(LOGIN_URL))
 
 
 @auth_bp.route('/resend-activation', methods=['GET', 'POST'])
 def resend_activation():
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     if request.method == 'POST':
         email = request.form.get('email')
@@ -112,7 +154,7 @@ def resend_activation():
         else:
             flash('Якщо акаунт існує і не активований, лист буде надіслано.', 'info')
 
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     return render_template(RESEND_ACTIVATION_TEMPLATE)
 
@@ -120,7 +162,7 @@ def resend_activation():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     form = LoginForm()
 
@@ -131,7 +173,7 @@ def login():
             flash('Користувача з таким ім\'ям не знайдено. Будь ласка, зареєструйтесь.', 'warning')
             log_login_attempt(None, form.username.data, False, 'user_not_found')
             db.session.commit()
-            return redirect(url_for('auth.register'))
+            return redirect(url_for(REGISTER_URL))
 
         if not user.has_password():
             provider = user.oauth_provider or 'OAuth'
@@ -163,7 +205,7 @@ def login():
                 reason = 'account_locked_after_too_many_attempts'
                 flash(f'Забагато невдалих спроб. Акаунт заблоковано на {LOCKOUT_MINUTES} хв.', 'danger')
             else:
-                flash('Невірний пароль', 'danger')
+                flash(INVALID_CREDENTIALS_MESSAGE, 'danger')
 
             log_login_attempt(user, user.username, False, reason)
             db.session.add(user)
@@ -188,7 +230,7 @@ def login():
         if not is_safe_redirect_url(next_page):
             next_page = None
 
-        return redirect(next_page if next_page else url_for('main.dashboard'))
+        return redirect(next_page if next_page else url_for(DASHBOARD_URL))
 
     return render_template(LOGIN_TEMPLATE, form=form)
 
@@ -197,13 +239,13 @@ def login():
 def two_factor():
     if '2fa_user_id' not in session:
         flash('Спочатку введіть логін і пароль.', 'warning')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     user = User.query.get(session['2fa_user_id'])
     if not user:
         session.pop('2fa_user_id', None)
-        flash('Користувача не знайдено.', 'danger')
-        return redirect(url_for('auth.login'))
+        flash(USER_NOT_FOUND_MESSAGE, 'danger')
+        return redirect(url_for(LOGIN_URL))
 
     form = TwoFactorForm()
 
@@ -220,7 +262,7 @@ def two_factor():
 
             login_user(user)
             flash(f'Ласкаво просимо, {user.username}!', 'success')
-            return redirect(url_for('main.dashboard'))
+            return redirect(url_for(DASHBOARD_URL))
         else:
             flash('Невірний код. Спробуйте ще раз.', 'danger')
             log_login_attempt(user, user.username, False, 'invalid_2fa_code')
@@ -233,7 +275,7 @@ def two_factor():
 def forgot_password():
     """Запит на відновлення пароля"""
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     form = ForgotPasswordForm()
 
@@ -252,7 +294,7 @@ def forgot_password():
                 print(f"Error sending reset email: {e}")
 
         flash('Якщо акаунт з такою адресою існує, ми надіслали лист з інструкціями.', 'info')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     return render_template(FORGOT_PASSWORD_TEMPLATE, form=form)
 
@@ -261,7 +303,7 @@ def forgot_password():
 def reset_password(token):
     """Скидання пароля за токеном"""
     if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for(DASHBOARD_URL))
 
     email, error = verify_reset_token(token)
 
@@ -272,7 +314,7 @@ def reset_password(token):
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        flash('Користувача не знайдено.', 'danger')
+        flash(USER_NOT_FOUND_MESSAGE, 'danger')
         return redirect(url_for('auth.forgot_password'))
 
     form = ResetPasswordForm()
@@ -284,7 +326,7 @@ def reset_password(token):
         db.session.commit()
 
         flash('Пароль успішно змінено! Тепер ви можете увійти.', 'success')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for(LOGIN_URL))
 
     return render_template(RESET_PASSWORD_TEMPLATE, form=form)
 
@@ -294,4 +336,4 @@ def reset_password(token):
 def logout():
     logout_user()
     flash('Ви вийшли з системи', 'info')
-    return redirect(url_for('auth.login'))
+    return redirect(url_for(LOGIN_URL))
